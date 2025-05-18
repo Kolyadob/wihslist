@@ -6,11 +6,19 @@ from .models import Product, CartItem, Profile
 from .forms import ProfileForm, ProductForm
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 
 # Главная страница: список товаров
 def product_list(request):
-    products = Product.objects.all()
-    return render(request, 'product_list.html', {'products': products})
+    products = Product.objects.all().order_by('-id')
+    paginator = Paginator(products, 20)  # 9 товаров на страницу
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'product_list.html', {
+        'page_obj': page_obj,
+        'products': page_obj.object_list,
+        'is_paginated': page_obj.has_other_pages(),
+    })
 
 # Детали товара
 def product_detail(request, pk):
