@@ -15,17 +15,15 @@
         font-weight: 500;
       }
       footer {
-        background-color: #f1f1f1;
-        padding: 1.5rem 0;
-        margin-top: 3rem;
-        text-align: center;
+        background-color: #343a40;
+        color: #f8f9fa;
+        padding: 1rem 0;
         font-size: 0.9rem;
-        color: #666;
       }
     </style>
 </head>
-<body>
-<header class="bg-light border-bottom mb-4 py-3">
+<body class="d-flex flex-column min-vh-100">
+<header class="bg-light border-bottom py-3">
   <div class="container d-flex justify-content-between align-items-center">
     <a href="{% url 'product_list' %}" class="text-decoration-none text-dark">
       <span class="logo-title">Wihslist</span>
@@ -46,14 +44,16 @@
   </div>
 </header>
 
-<div class="container">
-  {% block content %}{% endblock %}
-</div>
+<main class="flex-grow-1">
+  <div class="container py-4">
+    {% block content %}{% endblock %}
+  </div>
+</main>
 
-<footer>
+<footer class="text-center mt-auto">
   <div class="container">
-    <p>Wihslist — простой сервис для хранения и обмена вашими желаниями 🎁</p>
-    <p>Создан с любовью к электронному бизнесу • © {% now "Y" %}</p>
+    <p class="mb-1">Wihslist — простой сервис для хранения и обмена вашими желаниями 🎁</p>
+    <p class="mb-0">Создан с любовью к электронному бизнесу • © {% now "Y" %}</p>
   </div>
 </footer>
 
