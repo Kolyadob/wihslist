@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1 class="mb-4">Add New Product</h1>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label for="id_name" class="form-label">Name</label>
+    {{ form.name }}
+  </div>
+  <div class="mb-3">
+    <label for="id_description" class="form-label">Description</label>
+    {{ form.description }}
+  </div>
+  <div class="mb-3">
+    <label for="id_price" class="form-label">Price</label>
+    {{ form.price }}
+  </div>
+  <div class="mb-3">
+    <label for="id_image" class="form-label">Image</label>
+    {{ form.image }}
+  </div>
+  <button type="submit" class="btn btn-success">Add Product</button>
+</form>
+{% endblock %}

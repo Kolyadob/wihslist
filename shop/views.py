@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from .models import Product, CartItem, Profile
-from .forms import ProfileForm
+from .forms import ProfileForm, ProductForm
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 
@@ -104,3 +104,15 @@ def add_friend(request, username):
     if target_user != request.user:
         request.user.profile.friends.add(target_user.profile)
     return redirect('friends_list')
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+    return render(request, 'add_product.html', {'form': form})
+

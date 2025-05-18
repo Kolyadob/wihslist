@@ -13,4 +13,5 @@ urlpatterns = [
     path('wishlist/<str:token>/', views.public_wishlist, name='public_wishlist'),
     path('friends/', views.friends_list, name='friends_list'),
     path('add-friend/<str:username>/', views.add_friend, name='add_friend'),
+    path('add-product/', views.add_product, name='add_product'),
 ]

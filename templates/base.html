@@ -34,6 +34,7 @@
         {% if user.is_authenticated %}
           <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'friends_list' %}">Friends</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'add_product' %}">Add Product</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
         {% else %}
           <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
