@@ -4,28 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist Site</title>
+    <title>Wihslist</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+      .logo-title {
+        font-family: 'Great Vibes', cursive;
+        font-size: 2.2rem;
+        font-weight: 500;
+      }
+      footer {
+        background-color: #f1f1f1;
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+      }
+    </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'product_list' %}">Home</a>
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
-      {% if user.is_authenticated %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
-      {% else %}
-        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
-        <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
-      {% endif %}
-    </ul>
+<header class="bg-light border-bottom mb-4 py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <a href="{% url 'product_list' %}" class="text-decoration-none text-dark">
+      <span class="logo-title">Wihslist</span>
+    </a>
+    <nav>
+      <ul class="nav">
+        <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">Cart</a></li>
+        {% if user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}">Sign Up</a></li>
+        {% endif %}
+      </ul>
+    </nav>
   </div>
-</nav>
+</header>
+
 <div class="container">
-    {% block content %}{% endblock %}
+  {% block content %}{% endblock %}
 </div>
+
+<footer>
+  <div class="container">
+    <p>Wihslist — простой сервис для хранения и обмена вашими желаниями 🎁</p>
+    <p>Создан с любовью • © {{ now|date:"Y" }}</p>
+  </div>
+</footer>
+
 </body>
 </html>
