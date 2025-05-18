@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>{{ profile.user.username }}'s Wishlist</h1>
+{% if user.is_authenticated and user != profile.user and profile not in user.profile.friends.all %}
+  <form action="{% url 'add_friend' profile.user.username %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-success mb-3">Add to Friends</button>
+  </form>
+{% endif %}
+{% if items %}
+  <ul class="list-group">
+    {% for item in items %}
+      <li class="list-group-item d-flex align-items-center">
+        {% if item.product.image %}
+          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+        {% else %}
+          <img src="{% static 'img/placeholder.jpg' %}" alt="placeholder" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+        {% endif %}
+        <div>
+          <strong>{{ item.product.name }}</strong><br>
+          Quantity: {{ item.quantity }}
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>This wishlist is empty.</p>
+{% endif %}
+{% endblock %}

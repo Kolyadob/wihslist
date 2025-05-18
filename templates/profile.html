@@ -18,6 +18,12 @@
           {{ form.as_p }}
           <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
         </form>
+        {% if share_url %}
+          <div class="mt-4">
+            <label for="share-url" class="form-label">Share your wishlist link:</label>
+            <input type="text" id="share-url" class="form-control" value="{{ share_url }}" readonly onclick="this.select();">
+          </div>
+        {% endif %}
       </div>
     </div>
   </div>
