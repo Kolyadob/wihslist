@@ -10,7 +10,7 @@
           {% if item.product.image %}
             <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
           {% else %}
-            <img src="{% static 'img/zaglushka.jpg' %}" alt="placeholder" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
+            <img src="{% static 'img/placeholder.jpg' %}" alt="placeholder" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
           {% endif %}
           <div>
             <strong>{{ item.product.name }}</strong><br>

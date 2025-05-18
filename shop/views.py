@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .models import Product, CartItem
+from .models import Product, CartItem, Profile
+from .forms import ProfileForm
 
 # Главная страница: список товаров
 def product_list(request):
@@ -63,5 +64,15 @@ def remove_from_cart(request, item_id):
 # Профиль пользователя
 @login_required
 def profile_view(request):
+    profile = request.user.profile
     items = CartItem.objects.filter(user=request.user)
-    return render(request, 'profile.html', {'items': items})
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+    return render(request, 'profile.html', {'items': items, 'form': form})
