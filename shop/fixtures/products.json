@@ -1,0 +1,33 @@
+[
+    {
+      "model": "shop.product",
+      "pk": 1,
+      "fields": {
+        "name": "Wireless Headphones",
+        "description": "High-quality wireless headphones with noise cancellation.",
+        "price": "99.99",
+        "image": ""
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 2,
+      "fields": {
+        "name": "Smart Watch",
+        "description": "Water-resistant smart watch with fitness tracking.",
+        "price": "149.90",
+        "image": ""
+      }
+    },
+    {
+      "model": "shop.product",
+      "pk": 3,
+      "fields": {
+        "name": "E-reader",
+        "description": "Lightweight e-reader with high-resolution display.",
+        "price": "79.50",
+        "image": ""
+      }
+    }
+  ]
+  

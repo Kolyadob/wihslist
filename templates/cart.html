@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Your Cart</h1>
+{% if items %}
+  <ul class="list-group">
+    {% for item in items %}
+      <li class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+          <strong>{{ item.product.name }}</strong>
+          <form action="{% url 'update_cart' item.id %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" style="width:60px">
+            <button class="btn btn-sm btn-outline-secondary">Update</button>
+          </form>
+          <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-sm btn-danger">Remove</a>
+        </div>
+        <span>${{ item.product.price|floatformat:2 }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Your cart is empty.</p>
+{% endif %}
+{% endblock %}
