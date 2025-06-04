@@ -8,10 +8,9 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 
-# Главная страница: список товаров
 def product_list(request):
     products = Product.objects.all().order_by('-id')
-    paginator = Paginator(products, 20)  # 9 товаров на страницу
+    paginator = Paginator(products, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     return render(request, 'product_list.html', {
@@ -20,12 +19,10 @@ def product_list(request):
         'is_paginated': page_obj.has_other_pages(),
     })
 
-# Детали товара
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'product_detail.html', {'product': product})
 
-# Регистрация пользователя
 def signup(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -37,7 +34,6 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
 
-# Добавление в корзину
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -47,13 +43,12 @@ def add_to_cart(request, product_id):
         item.save()
     return redirect('cart')
 
-# Просмотр корзины
 @login_required
 def cart_view(request):
     items = CartItem.objects.filter(user=request.user)
-    return render(request, 'cart.html', {'items': items})
+    total = sum(item.product.price * item.quantity for item in items)
+    return render(request, 'cart.html', {'items': items, 'total': total})
 
-# Обновление количества
 @login_required
 def update_cart(request, item_id):
     if request.method == 'POST':
@@ -64,14 +59,12 @@ def update_cart(request, item_id):
             item.save()
         return redirect('cart')
 
-# Удаление из корзины
 @login_required
 def remove_from_cart(request, item_id):
     item = get_object_or_404(CartItem, id=item_id, user=request.user)
     item.delete()
     return redirect('cart')
 
-# Профиль пользователя
 @login_required
 def profile_view(request):
     profile = request.user.profile
@@ -91,27 +84,27 @@ def profile_view(request):
 
     share_url = request.build_absolute_uri(f"/wishlist/{profile.share_token}/")
 
-    return render(request, 'profile.html', {'items': items, 'form': form, 'share_url': share_url})
+    return render(request, 'profile.html', {
+        'items': items,
+        'form': form,
+        'share_url': share_url,
+        'is_owner': True
+    })
 
-# Просмотр чужого wishlist по токену
 def public_wishlist(request, token):
     profile = get_object_or_404(Profile, share_token=token)
     items = CartItem.objects.filter(user=profile.user)
-    return render(request, 'public_wishlist.html', {'profile': profile, 'items': items})
-
-# Просмотр списка друзей
-@login_required
-def friends_list(request):
-    profile = request.user.profile
-    return render(request, 'friends.html', {'friends': profile.friends.all()})
-
-# Добавление друга по username
-@login_required
-def add_friend(request, username):
-    target_user = get_object_or_404(User, username=username)
-    if target_user != request.user:
-        request.user.profile.friends.add(target_user.profile)
-    return redirect('friends_list')
+    is_subscribed = False
+    if request.user.is_authenticated:
+        is_subscribed = Subscription.objects.filter(
+            subscriber=request.user, 
+            target=profile.user
+        ).exists()
+    return render(request, 'public_wishlist.html', {
+        'profile': profile, 
+        'items': items,
+        'is_subscribed': is_subscribed
+    })
 
 @login_required
 def add_product(request):
@@ -132,19 +125,41 @@ def subscribe(request, username):
     return redirect('public_profile', username=target.username)
 
 @login_required
+def unsubscribe(request, username):
+    target = get_object_or_404(User, username=username)
+    Subscription.objects.filter(subscriber=request.user, target=target).delete()
+    return redirect('public_profile', username=target.username)
+
+@login_required
 def subscribers_list(request):
     subscribers = request.user.subscribers.all()
     return render(request, 'subscribers_list.html', {'subscribers': subscribers})
 
 @login_required
+def subscriptions_list(request):
+    subscriptions = Subscription.objects.filter(subscriber=request.user)
+    return render(request, 'subscriptions_list.html', {'subscriptions': subscriptions})
+
+@login_required
 def public_profile(request, username):
     target_user = get_object_or_404(User, username=username)
     items = CartItem.objects.filter(user=target_user)
-    share_url = None  # можно добавить, если надо
+    is_subscribed = Subscription.objects.filter(
+        subscriber=request.user, 
+        target=target_user
+    ).exists()
+    
+    share_url = None
+    if target_user == request.user:
+        share_url = request.build_absolute_uri(
+            f"/wishlist/{target_user.profile.share_token}/"
+        )
 
     return render(request, 'profile.html', {
         'user': target_user,
         'items': items,
         'share_url': share_url,
-        'form': None,  # отключаем форму обновления
+        'form': None,
+        'is_subscribed': is_subscribed,
+        'is_owner': target_user == request.user
     })

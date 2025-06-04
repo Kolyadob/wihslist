@@ -26,7 +26,6 @@ class CartItem(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='avatars/', blank=True, null=True)
-    friends = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='friend_set')
     share_token = models.CharField(max_length=64, blank=True, null=True, unique=True)
 
     def __str__(self):
@@ -48,4 +47,3 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.subscriber.username} → {self.target.username}"
-    

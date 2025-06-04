@@ -1,11 +1,39 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Подписчики</h2>
-<ul class="list-group">
-  {% for sub in subs %}
-    <li class="list-group-item">{{ sub.subscriber.username }}</li>
-  {% empty %}
-    <li class="list-group-item">Пока нет подписчиков.</li>
-  {% endfor %}
-</ul>
+<h2 class="mb-4">Мои подписчики</h2>
+
+{% if subscribers %}
+  <div class="row">
+    {% for sub in subscribers %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              {% if sub.subscriber.profile.image %}
+                <img src="{{ sub.subscriber.profile.image.url }}" alt="avatar" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+              {% else %}
+                <img src="{% static 'img/avatar-placeholder.png' %}" alt="avatar" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+              {% endif %}
+              <div>
+                <h5 class="mb-0">{{ sub.subscriber.username }}</h5>
+                <p class="text-muted mb-0">Подписан с {{ sub.created_at|date:"d M Y" }}</p>
+              </div>
+            </div>
+            <div class="d-grid">
+              <a href="{% url 'public_profile' sub.subscriber.username %}" class="btn btn-outline-primary">
+                <i class="fas fa-user me-1"></i> Посмотреть профиль
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-center py-5">
+    <i class="fas fa-users display-1 text-muted mb-3"></i>
+    <h4 class="mb-2">У вас пока нет подписчиков</h4>
+    <p class="text-muted">Делитесь своим вишлистом, чтобы привлечь подписчиков</p>
+  </div>
+{% endif %}
 {% endblock %}

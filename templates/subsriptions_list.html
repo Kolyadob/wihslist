@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>Мои подписки</h2>
+  <a href="{% url 'product_list' %}" class="btn btn-outline-primary">
+    <i class="fas fa-search me-1"></i> Найти друзей
+  </a>
+</div>
+
+{% if subscriptions %}
+  <div class="row">
+    {% for sub in subscriptions %}
+      <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+              {% if sub.target.profile.image %}
+                <img src="{{ sub.target.profile.image.url }}" alt="avatar" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+              {% else %}
+                <img src="{% static 'img/avatar-placeholder.png' %}" alt="avatar" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+              {% endif %}
+              <div>
+                <h5 class="mb-0">{{ sub.target.username }}</h5>
+                <p class="text-muted mb-0">Подписан с {{ sub.created_at|date:"d M Y" }}</p>
+              </div>
+            </div>
+            <div class="d-grid gap-2">
+              <a href="{% url 'public_wishlist' sub.target.profile.share_token %}" class="btn btn-outline-primary">
+                <i class="fas fa-gift me-1"></i> Посмотреть вишлист
+              </a>
+              <a href="{% url 'unsubscribe' sub.target.username %}" class="btn btn-outline-danger">
+                <i class="fas fa-user-minus me-1"></i> Отписаться
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="text-center py-5">
+    <i class="fas fa-user-friends display-1 text-muted mb-3"></i>
+    <h4 class="mb-2">У вас пока нет подписок</h4>
+    <p class="text-muted mb-4">Найдите друзей и подпишитесь на их вишлисты</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary">
+      <i class="fas fa-search me-1"></i> Найти друзей
+    </a>
+  </div>
+{% endif %}
+{% endblock %}

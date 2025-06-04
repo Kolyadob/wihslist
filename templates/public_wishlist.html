@@ -1,33 +1,55 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>{{ profile.user.username }}'s Wishlist</h1>
-{% if user.is_authenticated and user != profile.user %}
-  {% if profile not in user.profile.friends.all %}
-    <form action="{% url 'add_friend' profile.user.username %}" method="post" class="mb-2">
-      {% csrf_token %}
-      <button class="btn btn-success">Add to Friends</button>
-    </form>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Вишлист {{ profile.user.username }}</h1>
+  {% if user.is_authenticated and user != profile.user %}
+    {% if is_subscribed %}
+      <a href="{% url 'unsubscribe' profile.user.username %}" class="btn btn-danger">
+        <i class="fas fa-user-minus me-1"></i> Отписаться
+      </a>
+    {% else %}
+      <a href="{% url 'subscribe' profile.user.username %}" class="btn btn-success">
+        <i class="fas fa-user-plus me-1"></i> Подписаться
+      </a>
+    {% endif %}
   {% endif %}
-  <a href="{% url 'public_profile' profile.user.username %}" class="btn btn-outline-secondary btn-sm">Перейти в профиль</a>
-{% endif %}
+</div>
+
 {% if items %}
-  <ul class="list-group">
+  <div class="row">
     {% for item in items %}
-      <li class="list-group-item d-flex align-items-center">
-        {% if item.product.image %}
-          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-        {% else %}
-          <img src="{% static 'img/placeholder.jpg' %}" alt="placeholder" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-        {% endif %}
-        <div>
-          <strong>{{ item.product.name }}</strong><br>
-          Quantity: {{ item.quantity }}
+      <div class="col-md-6 mb-4">
+        <div class="card h-100">
+          {% if item.product.image %}
+            <img src="{{ item.product.image.url }}" class="card-img-top" alt="{{ item.product.name }}" style="height: 200px; object-fit: cover;">
+          {% else %}
+            <img src="{% static 'img/placeholder.jpg' %}" class="card-img-top" alt="placeholder" style="height: 200px; object-fit: cover;">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ item.product.name }}</h5>
+            <p class="card-text">{{ item.product.description|truncatechars:100 }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <strong>${{ item.product.price }}</strong>
+              <span class="badge bg-primary">× {{ item.quantity }}</span>
+            </div>
+          </div>
         </div>
-      </li>
+      </div>
     {% endfor %}
-  </ul>
+  </div>
 {% else %}
-  <p>This wishlist is empty.</p>
+  <div class="text-center py-5">
+    <i class="fas fa-box-open display-1 text-muted mb-3"></i>
+    <h4 class="mb-2">Список желаний пуст</h4>
+    <p class="text-muted">{{ profile.user.username }} пока не добавил товары в свой вишлист</p>
+    <a href="{% url 'product_list' %}" class="btn btn-primary">Посмотреть другие вишлисты</a>
+  </div>
 {% endif %}
+
+<div class="text-center mt-4">
+  <a href="{% url 'public_profile' profile.user.username %}" class="btn btn-outline-secondary">
+    <i class="fas fa-user me-1"></i> Перейти в профиль
+  </a>
+</div>
 {% endblock %}

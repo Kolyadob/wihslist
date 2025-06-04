@@ -1,62 +1,129 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1 class="mb-4">Your Profile</h1>
 <div class="row">
-  <div class="col-md-4 text-center">
-    <div class="card">
-      <div class="card-body">
+  <div class="col-lg-4">
+    <div class="card profile-card mb-4">
+      <div class="card-body text-center">
         {% if user.profile.image %}
           <img src="{{ user.profile.image.url }}" alt="avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
         {% else %}
           <img src="{% static 'img/avatar-placeholder.png' %}" alt="avatar" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
         {% endif %}
-        <h5>{{ user.username }}</h5>
-        <p class="text-muted">{{ user.email }}</p>
-
-        {# Подписка, если чужой профиль #}
-        {% if request.user != user %}
-          <a href="{% url 'subscribe' user.username %}" class="btn btn-sm btn-outline-primary mb-3">Подписаться</a>
+        <h3 class="mb-1">{{ user.username }}</h3>
+        <p class="text-muted mb-3">{{ user.email }}</p>
+        
+        <div class="d-flex justify-content-center mb-3">
+          <div class="stats-card text-center me-3">
+            <div class="stats-number">{{ user.subscribers.count }}</div>
+            <small>Подписчиков</small>
+          </div>
+          <div class="stats-card text-center">
+            <div class="stats-number">{{ user.subscriptions.count }}</div>
+            <small>Подписок</small>
+          </div>
+        </div>
+        
+        {% if not is_owner and user.is_authenticated %}
+          {% if is_subscribed %}
+            <a href="{% url 'unsubscribe' user.username %}" class="btn btn-danger subscribe-btn">
+              <i class="fas fa-user-minus me-1"></i> Отписаться
+            </a>
+          {% else %}
+            <a href="{% url 'subscribe' user.username %}" class="btn btn-success subscribe-btn">
+              <i class="fas fa-user-plus me-1"></i> Подписаться
+            </a>
+          {% endif %}
         {% endif %}
-
-        <form method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
-        </form>
-
-        {% if share_url %}
-          <div class="mt-4">
-            <label for="share-url" class="form-label">Share your wishlist link:</label>
-            <input type="text" id="share-url" class="form-control" value="{{ share_url }}" readonly onclick="this.select();">
+        
+        {% if is_owner %}
+          <div class="share-box">
+            <h5 class="mb-2">Поделиться вишлистом</h5>
+            <div class="input-group mb-2">
+              <input type="text" id="share-url" class="form-control" value="{{ share_url }}" readonly>
+              <button class="btn btn-outline-primary" onclick="copyShareUrl()">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <small class="text-muted">Отправьте эту ссылку друзьям</small>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% if is_owner %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Обновить профиль</h5>
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100">Сохранить</button>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-header bg-white">
+        <h4 class="mb-0">Список желаний</h4>
+      </div>
+      <div class="card-body">
+        {% if items %}
+          <div class="list-group">
+            {% for item in items %}
+              <div class="list-group-item wishlist-item">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    {% if item.product.image %}
+                      <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% else %}
+                      <img src="{% static 'img/placeholder.jpg' %}" alt="placeholder" class="me-3 rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                    {% endif %}
+                    <div>
+                      <h6 class="mb-0">{{ item.product.name }}</h6>
+                      <small class="text-muted">${{ item.product.price }} × {{ item.quantity }}</small>
+                    </div>
+                  </div>
+                  <span class="badge bg-primary rounded-pill">${{ item.product.price|floatformat:2 }}</span>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+          <div class="d-flex justify-content-end mt-3">
+            <h5>Итого: <span class="text-primary">${{ total|default:"0.00" }}</span></h5>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-gift display-1 text-muted mb-3"></i>
+            <h4 class="mb-2">Список желаний пуст</h4>
+            <p class="text-muted">Добавьте товары, которые хотите получить в подарок</p>
+            {% if is_owner %}
+              <a href="{% url 'product_list' %}" class="btn btn-primary">Найти товары</a>
+            {% endif %}
           </div>
         {% endif %}
       </div>
     </div>
   </div>
-  <div class="col-md-8">
-    <h4>Wishlist Items</h4>
-    {% if items %}
-      <ul class="list-group">
-        {% for item in items %}
-          <li class="list-group-item d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center">
-              {% if item.product.image %}
-                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-              {% else %}
-                <img src="{% static 'img/placeholder.jpg' %}" alt="placeholder" class="me-3" style="width: 60px; height: 60px; object-fit: cover;">
-              {% endif %}
-              <div>
-                <strong>{{ item.product.name }}</strong>
-              </div>
-            </div>
-            <span>{{ item.quantity }} pcs</span>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p>No items in your wishlist yet.</p>
-    {% endif %}
-  </div>
 </div>
+
+{% if is_owner %}
+<script>
+  function copyShareUrl() {
+    const copyText = document.getElementById("share-url");
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    
+    const originalText = copyText.value;
+    copyText.value = "Скопировано!";
+    setTimeout(() => {
+      copyText.value = originalText;
+    }, 2000);
+  }
+</script>
+{% endif %}
 {% endblock %}
