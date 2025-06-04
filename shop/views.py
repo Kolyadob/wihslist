@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from .models import Product, CartItem, Profile
+from .models import Product, CartItem, Profile, Subscription
 from .forms import ProfileForm, ProductForm
 from django.utils.crypto import get_random_string
 from django.contrib.auth.models import User
@@ -124,3 +124,27 @@ def add_product(request):
         form = ProductForm()
     return render(request, 'add_product.html', {'form': form})
 
+@login_required
+def subscribe(request, username):
+    target = get_object_or_404(User, username=username)
+    if target != request.user:
+        Subscription.objects.get_or_create(subscriber=request.user, target=target)
+    return redirect('public_profile', username=target.username)
+
+@login_required
+def subscribers_list(request):
+    subscribers = request.user.subscribers.all()
+    return render(request, 'subscribers_list.html', {'subscribers': subscribers})
+
+@login_required
+def public_profile(request, username):
+    target_user = get_object_or_404(User, username=username)
+    items = CartItem.objects.filter(user=target_user)
+    share_url = None  # можно добавить, если надо
+
+    return render(request, 'profile.html', {
+        'user': target_user,
+        'items': items,
+        'share_url': share_url,
+        'form': None,  # отключаем форму обновления
+    })

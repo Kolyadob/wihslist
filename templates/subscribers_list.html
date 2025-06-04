@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Подписчики</h2>
+<ul class="list-group">
+  {% for sub in subs %}
+    <li class="list-group-item">{{ sub.subscriber.username }}</li>
+  {% empty %}
+    <li class="list-group-item">Пока нет подписчиков.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

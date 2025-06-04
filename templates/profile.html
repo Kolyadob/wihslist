@@ -13,11 +13,18 @@
         {% endif %}
         <h5>{{ user.username }}</h5>
         <p class="text-muted">{{ user.email }}</p>
+
+        {# Подписка, если чужой профиль #}
+        {% if request.user != user %}
+          <a href="{% url 'subscribe' user.username %}" class="btn btn-sm btn-outline-primary mb-3">Подписаться</a>
+        {% endif %}
+
         <form method="post" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form.as_p }}
           <button type="submit" class="btn btn-primary btn-sm">Update Profile</button>
         </form>
+
         {% if share_url %}
           <div class="mt-4">
             <label for="share-url" class="form-label">Share your wishlist link:</label>

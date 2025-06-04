@@ -14,4 +14,7 @@ urlpatterns = [
     path('friends/', views.friends_list, name='friends_list'),
     path('add-friend/<str:username>/', views.add_friend, name='add_friend'),
     path('add-product/', views.add_product, name='add_product'),
+    path('subscribe/<str:username>/', views.subscribe, name='subscribe'),
+    path('subscribers/', views.subscribers_list, name='subscribers_list'),
+    path('user/<str:username>/', views.public_profile, name='public_profile'),
 ]
