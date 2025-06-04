@@ -40,16 +40,16 @@
     </a>
     <nav>
       <ul class="nav">
-        <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}"><i class="fas fa-shopping-cart me-1"></i> Cart</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}"><i class="fas fa-shopping-cart me-1"></i> Корзина</a></li>
         {% if user.is_authenticated %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i> Profile</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'subscriptions_list' %}"><i class="fas fa-users me-1"></i> Subscriptions</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'add_product' %}"><i class="fas fa-plus-circle me-1"></i> Add Product</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'search_users' %}"><i class="fas fa-user-friends me-1"></i> Find Friends</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}"><i class="fas fa-user me-1"></i> Профиль</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'subscriptions_list' %}"><i class="fas fa-users me-1"></i> Подписки</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'add_product' %}"><i class="fas fa-plus-circle me-1"></i> Добавить товар</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'search_users' %}"><i class="fas fa-user-friends me-1"></i> Найти друзей</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt me-1"></i> Выйти</a></li>
         {% else %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i> Login</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}"><i class="fas fa-user-plus me-1"></i> Sign Up</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'login' %}"><i class="fas fa-sign-in-alt me-1"></i> Войти</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'signup' %}"><i class="fas fa-user-plus me-1"></i> Регистрация</a></li>
         {% endif %}
       </ul>
     </nav>

@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Список желаний</h1>
         <a href="{% url 'search_users' %}" class="btn btn-outline-primary">
-            <i class="fas fa-user-friends me-1"></i> Find Friends
+            <i class="fas fa-user-friends me-1"></i> Найти друзей
         </a>
     </div>
     
@@ -13,7 +13,7 @@
         <div class="col-md-6">
             <form method="get" action="{% url 'product_list' %}">
                 <div class="input-group">
-                    <input type="text" class="form-control search-input" name="q" value="{{ query }}" placeholder="Search products...">
+                    <input type="text" class="form-control search-input" name="q" value="{{ query }}" placeholder="Поиск товаров...">
                     <button type="submit" class="btn btn-primary">
                         <i class="fas fa-search"></i>
                     </button>
@@ -22,11 +22,11 @@
         </div>
         <div class="col-md-3 ms-auto">
             <select class="form-select sort-select" onchange="location = this.value;">
-                <option value="?sort=-id" {% if sort == '-id' %}selected{% endif %}>Newest First</option>
-                <option value="?sort=price" {% if sort == 'price' %}selected{% endif %}>Price: Low to High</option>
-                <option value="?sort=-price" {% if sort == '-price' %}selected{% endif %}>Price: High to Low</option>
-                <option value="?sort=name" {% if sort == 'name' %}selected{% endif %}>Name: A-Z</option>
-                <option value="?sort=-name" {% if sort == '-name' %}selected{% endif %}>Name: Z-A</option>
+                <option value="?sort=-id" {% if sort == '-id' %}selected{% endif %}>Сначала новые</option>
+                <option value="?sort=price" {% if sort == 'price' %}selected{% endif %}>Цена: по возрастанию</option>
+                <option value="?sort=-price" {% if sort == '-price' %}selected{% endif %}>Цена: по убыванию</option>
+                <option value="?sort=name" {% if sort == 'name' %}selected{% endif %}>Название: А-Я</option>
+                <option value="?sort=-name" {% if sort == '-name' %}selected{% endif %}>Название: Я-А</option>
             </select>
         </div>
     </div>
@@ -57,11 +57,11 @@
     {% else %}
         <div class="col-12 text-center py-5">
             <i class="fas fa-box-open display-1 text-muted mb-3"></i>
-            <h4 class="text-muted">No products found</h4>
-            <p>Try a different search term or add a new product</p>
+            <h4 class="text-muted">Товары не найдены</h4>
+            <p>Попробуйте изменить поисковый запрос или добавить новый товар</p>
             {% if user.is_authenticated %}
                 <a href="{% url 'add_product' %}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> Add Product
+                    <i class="fas fa-plus me-1"></i> Добавить товар
                 </a>
             {% endif %}
         </div>
