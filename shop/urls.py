@@ -17,4 +17,5 @@ urlpatterns = [
     path('subscribers/', views.subscribers_list, name='subscribers_list'),
     path('subscriptions/', views.subscriptions_list, name='subscriptions_list'),
     path('user/<str:username>/', views.public_profile, name='public_profile'),
+    path('search-users/', views.search_users, name='search_users'),  # Новый путь
 ]

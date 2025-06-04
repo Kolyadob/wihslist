@@ -26,13 +26,17 @@
         
         {% if not is_owner and user.is_authenticated %}
           {% if is_subscribed %}
-            <a href="{% url 'unsubscribe' user.username %}" class="btn btn-danger subscribe-btn">
+            <a href="{% url 'unsubscribe' user.username %}" class="btn btn-danger subscribe-btn mb-2">
               <i class="fas fa-user-minus me-1"></i> Отписаться
             </a>
           {% else %}
-            <a href="{% url 'subscribe' user.username %}" class="btn btn-success subscribe-btn">
+            <a href="{% url 'subscribe' user.username %}" class="btn btn-success subscribe-btn mb-2">
               <i class="fas fa-user-plus me-1"></i> Подписаться
             </a>
+          {% endif %}
+          
+          {% if mutual_follow %}
+            <span class="mutual-badge">Mutual</span>
           {% endif %}
         {% endif %}
         
@@ -62,13 +66,68 @@
           </form>
         </div>
       </div>
+      
+      {% if recent_subscribers or recent_subscriptions %}
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Recent Activity</h5>
+          
+          {% if recent_subscribers %}
+          <div class="mb-3">
+            <h6>New Subscribers</h6>
+            <div class="list-group">
+              {% for sub in recent_subscribers %}
+              <a href="{% url 'public_profile' sub.subscriber.username %}" class="list-group-item list-group-item-action">
+                <div class="d-flex align-items-center">
+                  {% if sub.subscriber.profile.image %}
+                    <img src="{{ sub.subscriber.profile.image.url }}" alt="avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% else %}
+                    <img src="{% static 'img/avatar-placeholder.png' %}" alt="avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% endif %}
+                  <span>{{ sub.subscriber.username }}</span>
+                </div>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+          
+          {% if recent_subscriptions %}
+          <div>
+            <h6>New Subscriptions</h6>
+            <div class="list-group">
+              {% for sub in recent_subscriptions %}
+              <a href="{% url 'public_profile' sub.target.username %}" class="list-group-item list-group-item-action">
+                <div class="d-flex align-items-center">
+                  {% if sub.target.profile.image %}
+                    <img src="{{ sub.target.profile.image.url }}" alt="avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% else %}
+                    <img src="{% static 'img/avatar-placeholder.png' %}" alt="avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                  {% endif %}
+                  <span>{{ sub.target.username }}</span>
+                </div>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
     {% endif %}
   </div>
   
   <div class="col-lg-8">
     <div class="card">
       <div class="card-header bg-white">
-        <h4 class="mb-0">Список желаний</h4>
+        <div class="d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Список желаний</h4>
+          {% if is_owner %}
+          <a href="{% url 'product_list' %}" class="btn btn-sm btn-outline-primary">
+            <i class="fas fa-plus me-1"></i> Add Items
+          </a>
+          {% endif %}
+        </div>
       </div>
       <div class="card-body">
         {% if items %}
@@ -123,6 +182,16 @@
     setTimeout(() => {
       copyText.value = originalText;
     }, 2000);
+    
+    // Show notification
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert alert-success';
+    alertDiv.innerHTML = 'Link copied to clipboard!';
+    document.body.appendChild(alertDiv);
+    
+    setTimeout(() => {
+      alertDiv.remove();
+    }, 3000);
   }
 </script>
 {% endif %}
