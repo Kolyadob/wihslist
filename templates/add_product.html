@@ -1,25 +1,122 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1 class="mb-4">Add New Product</h1>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="mb-3">
-    <label for="id_name" class="form-label">Name</label>
-    {{ form.name }}
-  </div>
-  <div class="mb-3">
-    <label for="id_description" class="form-label">Description</label>
-    {{ form.description }}
-  </div>
-  <div class="mb-3">
-    <label for="id_price" class="form-label">Price</label>
-    {{ form.price }}
-  </div>
-  <div class="mb-3">
-    <label for="id_image" class="form-label">Image</label>
-    {{ form.image }}
-  </div>
-  <button type="submit" class="btn btn-success">Add Product</button>
-</form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0 text-center">
+                        <i class="fas fa-gift me-2"></i>Добавить новый товар
+                    </h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label for="id_name" class="form-label fw-bold">
+                                <i class="fas fa-tag me-2"></i>Название товара
+                            </label>
+                            {{ form.name }}
+                            <div class="invalid-feedback">
+                                Пожалуйста, укажите название товара
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="id_description" class="form-label fw-bold">
+                                <i class="fas fa-align-left me-2"></i>Описание
+                            </label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <label for="id_price" class="form-label fw-bold">
+                                    <i class="fas fa-dollar-sign me-2"></i>Цена
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ form.price }}
+                                </div>
+                                <div class="invalid-feedback">
+                                    Укажите корректную цену
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6 mb-4">
+                                <label for="id_image" class="form-label fw-bold">
+                                    <i class="fas fa-image me-2"></i>Изображение
+                                </label>
+                                {{ form.image }}
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-plus-circle me-2"></i>Добавить товар
+                            </button>
+                            <a href="{% url 'product_list' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Назад к списку
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #ced4da;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: #6f42c1;
+        box-shadow: 0 0 0 0.25rem rgba(111, 66, 193, 0.25);
+    }
+    
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        padding: 1.5rem;
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+    }
+    
+    #id_description {
+        min-height: 120px;
+    }
+</style>
+
+<script>
+    // Валидация формы
+    (function() {
+        'use strict'
+        
+        const forms = document.querySelectorAll('.needs-validation')
+        
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault()
+                    event.stopPropagation()
+                }
+                
+                form.classList.add('was-validated')
+            }, false)
+        })
+    })()
+</script>
 {% endblock %}
